@@ -37,7 +37,7 @@ def main():
     run.log("learning_rate:",     np.float(args.learning_rate))
     
     dataset_name = 'denver-cpi'
-    ds = Dataset.get_by_name(ws, databset_name)
+    ds = Dataset.get_by_name(ws, dataset_name)
     df = ds.to_pandas_dataframe()
     y = df['cpi']
     x = df.drop(columns=['cpi'])
@@ -53,9 +53,9 @@ def main():
     }
     
     reg = ensemble.GradientBoostingRegressor(**params)
-    reg.fit(X_train, y_train)
+    reg.fit(x_train, y_train)
     
-    mse = mean_squared_error(y_test, reg.predict(X_test))    
+    mse = mean_squared_error(y_test, reg.predict(x_test))    
     run.log("MSE", np.float(mse))
 
 if __name__ == '__main__':
