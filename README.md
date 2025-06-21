@@ -105,23 +105,23 @@ headers = {'Content-Type':'application/json', 'Accept': 'application/json', 'Aut
 
 ## Appendix (images)
 
-![alt text](imgs/aml_rd.png)
+![alt text](imgs/aml_rd.png)<br>
 Run details showing successfully completed AutoML experiment.
 
 
-![alt text](imgs/aml_br.png)
+![alt text](imgs/aml_br.png)<br>
 AutoML Best run showing the best run ID with status completed and link to the model.
 
-![alt text](imgs/endpoint.png)
+![alt text](imgs/endpoint.png)<br>
 AutoML endpoint showing as active.
 
 ![alt text](imgs/hd_rd.png)
 Run details showing successfully completed Hyperdrive experiment.
 
-![alt text](imgs/hd_br.png)
+![alt text](imgs/hd_br.png)<br>
 Hyperdrive Best run showing the best run ID with status completed and link to the model.
 
-![alt text](imgs/hd_br1.png)
+![alt text](imgs/hd_br1.png)<br>
 Metrics of hyperdrive Best run.
 
 
