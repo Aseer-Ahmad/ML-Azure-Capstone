@@ -39,6 +39,7 @@ def main():
     dataset_name = 'denver-cpi'
     ds = Dataset.get_by_name(ws, dataset_name)
     df = ds.to_pandas_dataframe()
+    df = df.fillna(0)
     y = df['cpi']
     x = df.drop(columns=['cpi'])
     
@@ -49,7 +50,6 @@ def main():
         "max_depth": np.int(args.max_depth),
         "min_samples_split": np.int(args.min_samples_split),
         "learning_rate": np.float(args.learning_rate),
-        "loss": "squared_error",
     }
     
     reg = ensemble.GradientBoostingRegressor(**params)
