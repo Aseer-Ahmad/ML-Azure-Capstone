@@ -2,11 +2,13 @@
 
 ## Project Overview
 
-This is the capstone project for the Udacity Machine Learning Engineer with Azure Nanodegree. The project demonstrates the process of training, evaluating, and deploying machine learning models using Azure Machine Learning services. Two primary methods are explored for model training and optimization: Azure Automated ML (AutoML) and Azure HyperDrive for hyperparameter tuning. The best model is then deployed as a web service.
+This project demonstrates the process of training, evaluating, and deploying machine learning models using Azure Machine Learning services. Two primary methods are explored for model training and optimization: Azure Automated ML (AutoML) and Azure HyperDrive for hyperparameter tuning. The best model is then deployed as a web service.
 
 ## Dataset
 
-This project utilizes the **Denver Consumer Price Index (CPI)** dataset, sourced from Kaggle. The dataset contains time-series data about the Consumer Price Index in Denver.
+This project utilizes the **Denver Consumer Price Index (CPI)** dataset, sourced from Kaggle. The dataset contains data about the Consumer Price Index in Denver. 
+
+It can be found at https://www.kaggle.com/datasets/bls/denver-cpi .
 
 The primary task is a regression problem: to predict the `cpi` value based on the other features in the dataset. The data is accessed by downloading it from KaggleHub and registering it as a Tabular Dataset in the Azure ML Workspace for use in experiments.
 
@@ -18,8 +20,13 @@ The AutoML run was configured with the following settings:
 - **Experiment Timeout:** Set to 30 minutes to control costs.
 - **Primary Metric:** `normalized_root_mean_squared_error` was chosen to evaluate model performance. The goal is to minimize this metric.
 - **Task:** Regression.
+- **Cross Validation:** set to 3.
 
 The best model found by AutoML was a `VotingEnsemble` which combines the predictions of multiple models to improve overall accuracy and robustness.
+- **median_absolute_error:** 0.14.
+- **explained_variance:** 0.99.
+- **r2_score:** 0.99.
+
 
 ## Hyperdrive
 
@@ -37,7 +44,7 @@ The HyperDrive experiment was configured as follows:
 - **Primary Metric:** `MSE` (Mean Squared Error), with a goal to `MINIMIZE`.
 - **Compute Target:** A pre-configured `AmlCompute` cluster.
 
-The best run from the HyperDrive experiment achieved an MSE of **2.248** with the following parameters:
+The best run from the HyperDrive experiment achieved an MSE of **2.248** with the following optimized parameters:
 - **n_estimators:** 100
 - **max_depth:** 4
 - **min_samples_split:** 4
@@ -46,9 +53,10 @@ The best run from the HyperDrive experiment achieved an MSE of **2.248** with th
 ## AutoML vs Hyperdrive
 
 - **AutoML** provides a broad, automated search across different model types and preprocessing pipelines. It's excellent for quickly establishing a strong baseline model with minimal configuration. The best model it produced was a `VotingEnsemble`.
+
 - **HyperDrive** offers a targeted approach to optimize a specific, pre-selected model (`GradientBoostingRegressor` in this case). It gives the user more control over the search space and algorithm.
 
-For this particular problem, the model produced by the HyperDrive run was selected for deployment due to its performance and interpretability.
+For this particular problem, the model produced by the `AutoML` run was selected for deployment.
 
 ## Deployment
 
@@ -60,15 +68,65 @@ The deployment process involved:
 3.  **Defining an Environment:** A conda environment (`sk_dep.yaml`) was specified, listing all necessary dependencies like scikit-learn and azureml-defaults.
 4.  **Deploying to Web Service:** The model was deployed to Azure Container Instances (ACI) as a REST endpoint. This endpoint can be queried with new data to get real-time CPI predictions.
 
-To query the endpoint, a POST request with a JSON payload containing the feature data is sent to the service's scoring URI.
+To query the endpoint, a POST request with a JSON payload containing the feature data is sent to the service's scoring URI ('http://218198b9-6ccc-4d0d-9619-0bcd0a37468c.eastus.azurecontainer.io/score'). Since authentication is enabled, a primary key is now required. 
+
+
+```
+data = {
+  "Inputs": {
+    "data": [
+      {
+        "stateFips": 0,
+        "area": 0,
+        "areaType": 0,
+        "period": 0,
+        "periodYear": 0,
+        "periodType": 0,
+        "type": 0,
+        "source": 0,
+        "percentChangeYear": 0,
+        "percentChangeMonth": 0,
+        "ptd_Annual": 0,
+        "ptd_Monthly": 0,
+        "ptd_Semi-Annual": 0,
+        "dr_CO": 0,
+        "dr_US": 0,
+        "an_Denver/Boulder/Greeley": 0,
+        "an_United States": 0
+      }
+    ]
+  },
+  "GlobalParameters": 1
+}
+
+headers = {'Content-Type':'application/json', 'Accept': 'application/json', 'Authorization':('Bearer '+ api_key)}   
+```
+
+
+## Appendix (images)
+
+![alt text](imgs/aml_rd.png)
+Run details showing successfully completed AutoML experiment.
+
+
+![alt text](imgs/aml_br.png)
+AutoML Best run showing the best run ID with status completed and link to the model.
+
+![alt text](imgs/endpoint.png)
+AutoML endpoint showing as active.
+
+![alt text](imgs/hd_rd.png)
+Run details showing successfully completed Hyperdrive experiment.
+
+![alt text](imgs/hd_br.png)
+Hyperdrive Best run showing the best run ID with status completed and link to the model.
+
+![alt text](imgs/hd_br1.png)
+Metrics of hyperdrive Best run.
+
 
 ## Screencast
 
-A screencast demonstrating the entire project is available. The video walks through:
-- The setup and execution of the AutoML and HyperDrive experiments in the Azure ML Studio.
-- The registration of the best-performing model.
-- The deployment of the model as a web service.
-- A live demonstration of sending a request to the deployed endpoint and receiving a prediction.
 
 ## Future Improvement
 
