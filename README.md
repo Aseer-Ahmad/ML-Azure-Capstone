@@ -8,9 +8,9 @@ This project demonstrates the process of training, evaluating, and deploying mac
 
 This project utilizes the **Denver Consumer Price Index (CPI)** dataset, sourced from Kaggle. The dataset contains data about the Consumer Price Index in Denver. 
 
-It can be found at https://www.kaggle.com/datasets/bls/denver-cpi .
+It can be found at https://www.kaggle.com/datasets/bls/denver-cpi
 
-The primary task is a regression problem: to predict the `cpi` value based on the other features in the dataset. The data is accessed by downloading it from KaggleHub and registering it as a Tabular Dataset in the Azure ML Workspace for use in experiments.
+The primary task is a regression problem: to predict the `cpi` value based on the other features in the dataset. The data is accessed by downloading it using `KaggleHub` library from kaggle, then cleaning it and registering it as a Tabular Dataset in the Azure ML Workspace for use in experiments.
 
 ## AutoML
 
